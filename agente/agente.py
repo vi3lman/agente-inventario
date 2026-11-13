@@ -22,13 +22,16 @@ class Agente:
         inventario (agente.inventario.Inventario): Datos del inventario.
         confirmar (callable): Pregunta al usuario si aprueba una acción.
         modelo (str): Modelo de Claude a usar.
+        registrar (callable | None): Si se indica, recibe una línea de texto
+            por cada herramienta que el modelo usa (para ver el ciclo en vivo).
     """
 
-    def __init__(self, cliente, inventario, confirmar, modelo):
+    def __init__(self, cliente, inventario, confirmar, modelo, registrar=None):
         self.cliente = cliente
         self.inventario = inventario
         self.confirmar = confirmar
         self.modelo = modelo
+        self.registrar = registrar or (lambda linea: None)
         self.mensajes = []  # historial: el agente recuerda la conversación
 
     def preguntar(self, texto):
@@ -69,11 +72,13 @@ class Agente:
         Un error no corta el programa: se le informa al modelo con
         ``is_error`` para que lo explique o pruebe otra cosa.
         """
+        self.registrar(f"  → el modelo pide: {bloque.name}({bloque.input})")
         try:
             contenido = ejecutar_herramienta(bloque.name, bloque.input, self.inventario, self.confirmar)
             es_error = False
         except HerramientaError as error:
             contenido, es_error = str(error), True
+        self.registrar(f"  ← resultado{' (error)' if es_error else ''}: {contenido}")
         return {
             "type": "tool_result",
             "tool_use_id": bloque.id,

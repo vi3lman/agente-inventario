@@ -87,8 +87,16 @@ export ANTHROPIC_API_KEY="tu-clave" # Windows: $env:ANTHROPIC_API_KEY="tu-clave"
 python main.py
 ```
 
-Variables opcionales: `MODELO` (por defecto `claude-haiku-5-5`) e
-`INVENTARIO_DB` (por defecto `inventario.db`).
+Variables opcionales: `MODELO` (por defecto `claude-haiku-5-5`),
+`INVENTARIO_DB` (por defecto `inventario.db`) y `VER_PASOS=1`, que muestra
+cada herramienta que pide el modelo y su resultado:
+
+```text
+Vos: ¿Hay teclados?
+  → el modelo pide: buscar_articulos({'texto': 'teclado'})
+  ← resultado: [{"codigo": "B300", "descripcion": "Teclado mecánico", ...}]
+Agente: Sí, hay dos modelos de teclado...
+```
 
 ## Tests
 

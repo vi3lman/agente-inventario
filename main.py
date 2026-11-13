@@ -3,6 +3,8 @@
 Uso:
     export ANTHROPIC_API_KEY="..."      (en Windows PowerShell: $env:ANTHROPIC_API_KEY="...")
     python main.py
+
+Con VER_PASOS=1 muestra cada herramienta que pide el modelo y su resultado.
 """
 
 import os
@@ -32,6 +34,7 @@ def main():
         inventario=Inventario(os.environ.get("INVENTARIO_DB", "inventario.db")),
         confirmar=confirmar_en_consola,
         modelo=os.environ.get("MODELO", MODELO_POR_DEFECTO),
+        registrar=print if os.environ.get("VER_PASOS") == "1" else None,
     )
     print("Agente de inventario. Escribí tu pregunta (o 'salir').")
     while True:
